@@ -1,6 +1,7 @@
 {
   "name": "toonify",
   "version": "0.1.0",
+  "description": "A browser implementation of the Dade toonify image filter.",
   "private": true,
   "scripts": {
     "serve": "vue-cli-service serve",
@@ -38,5 +39,20 @@
     "> 1%",
     "last 2 versions",
     "not dead"
-  ]
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/hyrumcoop/toonify.git"
+  },
+  "keywords": [
+    "toonify",
+    "image",
+    "filter"
+  ],
+  "author": "Hyrum Cooper",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/hyrumcoop/toonify/issues"
+  },
+  "homepage": "https://github.com/hyrumcoop/toonify#readme"
 }
