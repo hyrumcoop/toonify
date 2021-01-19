@@ -25,8 +25,12 @@ const cv = {
     this.worker.onmessage = (e) => (this._status[e.data.msg] = ['done', e])
     this.worker.onerror = (e) => (this._status[e.data.msg] = ['error', e])
     
-    return this._dispatch({ msg: 'load' })
+    return this._dispatch({msg: 'load'})
+  },
+
+  toonify(payload) {
+    return this._dispatch({msg: 'toonify', payload})
   }
 }
 
-export default new cv()
+export default cv

@@ -13,6 +13,8 @@
 </template>
 
 <script>
+import cv from '@/services/cv'
+
 export default {
   name: 'Toonify',
   data() {
@@ -24,6 +26,9 @@ export default {
       resultImageData: null
     }
   },
+  mounted() {
+    cv.load()
+  },
   methods: {
     uploadImage(e) {
       const image = e.target.files[0]
@@ -34,6 +39,7 @@ export default {
 
         img.onload = () => {
           this.uploadImageData = this.getImageData(img)
+          this.toonify()
         }
 
         this.uploadImageUrl = evt.target.result
@@ -41,6 +47,14 @@ export default {
       }
 
       reader.readAsDataURL(image)
+    },
+
+    async toonify() {
+      const result = await cv.toonify(this.uploadImageData)
+      const { payload } = result.data
+
+      this.resultImageData = payload
+      this.resultImageUrl = this.getImageDataUrl(this.resultImageData)
     },
 
     getImageData(img) {
