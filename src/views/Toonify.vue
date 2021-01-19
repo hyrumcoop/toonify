@@ -53,7 +53,14 @@ export default {
     async toonify() {
       const result = await cv.toonify(this.uploadImageData)
 
-      this.resultImageData = result
+      const first = await result.next()
+      console.log(first)
+      const second = await result.next()
+      console.log(second)
+      const third = await result.next()
+      console.log(third)
+
+      this.resultImageData = third.value
       this.resultImageUrl = this.getImageDataUrl(this.resultImageData)
     },
 

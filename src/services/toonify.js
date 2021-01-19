@@ -1,4 +1,9 @@
+import { proxy } from 'comlink'
+import helpers from './helpers'
+
 const toonify = cv => { // TODO: research dependency injection?
+  const _helpers = new helpers(cv)
+
   const quantizeValue = (val, a) => {
     return Math.floor(val / a) * a
   }
@@ -20,6 +25,7 @@ const toonify = cv => { // TODO: research dependency injection?
     return result
   }
   
+  // TODO: use generator
   const toonifyEdges = img => {
     const blurred = new cv.Mat()
     const edges = new cv.Mat()
@@ -34,6 +40,7 @@ const toonify = cv => { // TODO: research dependency injection?
     return dilated
   }
   
+  // TODO: use generator
   const toonifyColors = img => {
     let prevMat = img.clone()
     cv.cvtColor(prevMat, prevMat, cv.COLOR_BGRA2BGR)
@@ -72,15 +79,20 @@ const toonify = cv => { // TODO: research dependency injection?
   }
   
   // the actual toonify function that is returned
-  return async payload => {
+  const toonifyFilter = function* (payload) {
     const img = cv.matFromImageData(payload)
-  
+
     const edgeImg = toonifyEdges(img)
+    yield _helpers.imageDataFromMat(edgeImg)
+
     const colorImg = toonifyColors(img)
+    yield _helpers.imageDataFromMat(colorImg)
+
     const combined = toonifyCombine(edgeImg, colorImg)
-  
-    return combined
+    yield _helpers.imageDataFromMat(combined)
   }
+
+  return payload => proxy(toonifyFilter(payload)) // generators don't work without comlink proxy
 }
 
 export default toonify

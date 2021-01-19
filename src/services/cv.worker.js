@@ -15,10 +15,10 @@ CVService.prototype.load = async function() {
   this.loaded = true
 }
 
-CVService.prototype.toonify = async function(payload) {
+CVService.prototype.toonify = function(payload) {
   if (!this.loaded) throw Error('OpenCV has not been loaded yet.') // TODO: instead of throwing error, add it to an onload queue and give a warning
 
-  return this._helpers.imageDataFromMat(await this._toonify(payload))
+  return this._toonify(payload)
 }
 
 export default new CVService()
