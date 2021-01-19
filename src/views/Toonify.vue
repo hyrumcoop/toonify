@@ -1,22 +1,24 @@
 <template>
-  <div>
-    <h1>Toonify</h1>
-    <input type='file' accept='image/png, image/jpeg' ref='uploadInput' @change='uploadImage' />
-
-    <br>
-
-    <img :src='uploadImageUrl' height='300' />
-    <img :src='resultImageUrl' height='450' />
-    <canvas ref='uploadCanvas' class='hiddenCanvas' />
-    <canvas ref='resultCanvas' class='hiddenCanvas' />
+  <div class='d-flex flex-column vh-100'>
+    <navbar />
+    <image-viewer class='flex-grow-1' />
+    <image-history />
   </div>
 </template>
 
 <script>
 import cv from '../services/cv.worker'
+import Navbar from '@/components/Navbar'
+import ImageViewer from '@/components/ImageViewer'
+import ImageHistory from '@/components/ImageHistory'
 
 export default {
   name: 'Toonify',
+  components: {
+    Navbar,
+    ImageViewer,
+    ImageHistory
+  },
   data() {
     return {
       uploadImageUrl: '',
