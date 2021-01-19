@@ -28,7 +28,7 @@ const cv = {
     return this._dispatch({msg: 'load'})
   },
 
-  toonify(payload) {
+  toonify(payload) { // await loading
     return this._dispatch({msg: 'toonify', payload})
   }
 }
