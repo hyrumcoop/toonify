@@ -6,14 +6,14 @@
     <br>
 
     <img :src='uploadImageUrl' height='300' />
-    <img :src='resultImageUrl' height='300' />
+    <img :src='resultImageUrl' height='450' />
     <canvas ref='uploadCanvas' class='hiddenCanvas' />
     <canvas ref='resultCanvas' class='hiddenCanvas' />
   </div>
 </template>
 
 <script>
-import cv from '@/services/cv'
+import cv from '../services/cv.worker'
 
 export default {
   name: 'Toonify',
@@ -26,8 +26,9 @@ export default {
       resultImageData: null
     }
   },
-  mounted() {
-    cv.load()
+  async mounted() {
+    await cv.load()
+    console.log('OpenCV loaded')
   },
   methods: {
     uploadImage(e) {
@@ -51,9 +52,8 @@ export default {
 
     async toonify() {
       const result = await cv.toonify(this.uploadImageData)
-      const { payload } = result.data
 
-      this.resultImageData = payload
+      this.resultImageData = result
       this.resultImageUrl = this.getImageDataUrl(this.resultImageData)
     },
 
