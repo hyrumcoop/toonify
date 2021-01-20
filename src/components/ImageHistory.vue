@@ -57,7 +57,7 @@ export default {
   align-items: center;
 
   height: 90px;
-  background-color: #eee;
+  background-color: #212121;
 }
 
 .images {
