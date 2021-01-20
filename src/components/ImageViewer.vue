@@ -3,7 +3,7 @@
     <div class='image-container' ref='imageContainer' v-if='!!image'>
       <img
         class='image'
-        :src='imageSrc'
+        :src='imageUrl'
       />
     </div>
 
@@ -16,9 +16,7 @@
 <script>
 export default {
   name: 'ImageViewer',
-  props: {
-    image: Image
-  },
+  props: ['image'],
   methods: {
     // emits uploaded Image object as `upload` event
     uploadImage(e) {
@@ -39,8 +37,8 @@ export default {
     }
   },
   computed: {
-    imageSrc() {
-      return this.image && this.image.src
+    imageUrl() {
+      return this.image && this.image.url
     }
   }
 }

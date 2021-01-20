@@ -33,7 +33,7 @@ export default {
   },
   methods: {
     selectImage(index) {
-      this.$emit('select', {index, image: this.images[index]})
+      this.$emit('select', index)
     },
 
     isSelected(index) {
