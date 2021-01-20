@@ -7,9 +7,16 @@
       @upload='uploadImage'
     />
 
+    <loading-bar
+      v-if='loadingGallery'
+      :text='stepText'
+      :progress='stepProgress'
+    />
+
     <image-history
       :images='gallery'
       :selected='selectedImage'
+      :generating='loadingGallery'
       @select='i => selectImage(i)'
     />
   </div>
@@ -23,6 +30,7 @@ import useImageDataConverter from '@/composables/useImageDataConverter'
 
 import Navbar from '@/components/Navbar'
 import ImageViewer from '@/components/ImageViewer'
+import LoadingBar from '@/components/LoadingBar'
 import ImageHistory from '@/components/ImageHistory'
 
 export default {
@@ -30,6 +38,7 @@ export default {
   components: {
     Navbar,
     ImageViewer,
+    LoadingBar,
     ImageHistory
   },
   setup() {
