@@ -1,29 +1,41 @@
 <template>
-  <div>
-    <h1>Toonify</h1>
-    <input type='file' accept='image/png, image/jpeg' ref='uploadInput' @change='uploadImage' />
+  <div class='d-flex flex-column vh-100'>
+    <navbar />
 
-    <br>
+    <image-viewer
+      :image='currentImage'
+      @upload='uploadImage'
+    />
 
-    <img :src='uploadImageUrl' height='300' />
-    <img :src='resultImageUrl' height='450' />
-    <canvas ref='uploadCanvas' class='hiddenCanvas' />
-    <canvas ref='resultCanvas' class='hiddenCanvas' />
+    <image-history
+      :images='gallery'
+      :selected='selectedImage'
+      @select='i => selectImage(i)'
+    />
   </div>
 </template>
 
 <script>
 import cv from '../services/cv.worker'
 
+import useImageGallery from '@/composables/useImageGallery'
+import useImageDataConverter from '@/composables/useImageDataConverter'
+
+import Navbar from '@/components/Navbar'
+import ImageViewer from '@/components/ImageViewer'
+import ImageHistory from '@/components/ImageHistory'
+
 export default {
   name: 'Toonify',
-  data() {
+  components: {
+    Navbar,
+    ImageViewer,
+    ImageHistory
+  },
+  setup() {
     return {
-      uploadImageUrl: '',
-      uploadImageData: null,
-
-      resultImageUrl: '',
-      resultImageData: null
+      ...useImageDataConverter(),
+      ...useImageGallery()
     }
   },
   async mounted() {
@@ -31,68 +43,23 @@ export default {
     console.log('OpenCV loaded')
   },
   methods: {
-    uploadImage(e) {
-      const image = e.target.files[0]
-      const reader = new FileReader()
+    async uploadImage(img) {
+      // clear gallery, push uploaded image, and run toonify filter
+      this.clearGallery()
 
-      reader.onload = evt => {
-        const img = new Image
+      this.pushImage({
+        type: 'original', // TODO: gallery image type enums?
+        url: img.src,
+        tooltip: 'Original Image' // TODO: if using a gallery enum, this is redundant and is based on type
+      })
 
-        img.onload = () => {
-          this.uploadImageData = this.getImageData(img)
-          this.toonify()
-        }
-
-        this.uploadImageUrl = evt.target.result
-        img.src = evt.target.result
-      }
-
-      reader.readAsDataURL(image)
-    },
-
-    async toonify() {
-      const result = await cv.toonify(this.uploadImageData)
-
-      const first = await result.next()
-      console.log(first)
-      const second = await result.next()
-      console.log(second)
-      const third = await result.next()
-      console.log(third)
-
-      this.resultImageData = third.value
-      this.resultImageUrl = this.getImageDataUrl(this.resultImageData)
-    },
-
-    getImageData(img) {
-      const canvas = this.$refs.uploadCanvas
-      canvas.width = img.width
-      canvas.height = img.height
-
-      const ctx = canvas.getContext('2d')
-      ctx.drawImage(img, 0, 0)
-
-      return ctx.getImageData(0, 0, img.width, img.height)
-    },
-
-    getImageDataUrl(imageData) {
-      const canvas = this.$refs.resultCanvas
-      canvas.width = imageData.width
-      canvas.height = imageData.height
-
-      const ctx = canvas.getContext('2d')
-      ctx.putImageData(imageData, 0, 0)
-
-      return canvas.toDataURL('image/jpeg')
+      const imageData = this.toImageData(img)
+      this.generateGallery(await cv.toonify(imageData))
     }
   }
 }
 </script>
 
 <style scoped>
-
-.hiddenCanvas {
-  display: none;
-}
 
 </style>
