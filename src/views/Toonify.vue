@@ -10,6 +10,7 @@
     <image-history
       :images='gallery'
       :selected='selectedImage'
+      :generating='loadingGallery'
       @select='i => selectImage(i)'
     />
   </div>

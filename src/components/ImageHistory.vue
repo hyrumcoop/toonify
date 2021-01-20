@@ -1,6 +1,6 @@
 <template>
   <div class='image-history-bar'>
-    <div class='images' v-if='hasImages'>
+    <div class='images d-flex flex-row' v-if='hasImages'>
       <a
         href='#'
         class='preview-image'
@@ -12,6 +12,23 @@
         <img
           :src='image.url'
           :alt='image.tooltip' />
+      </a>
+
+      <a
+        href='#'
+        class='preview-image loading-image'
+        v-if='generating'
+      >
+        <div class='loading-spinner-box'>
+          <div class="spinner-border" role="status">
+            <span class="visually-hidden">Loading...</span>
+          </div>
+        </div>
+
+        <!-- Transparent image is used to make the spinner box the same size as the other images -->
+        <img
+            :src='firstImage.url'
+            :alt='firstImage.tooltip' />
       </a>
     </div>
 
@@ -29,7 +46,8 @@ export default {
     selected: {
       type: Number,
       default: 0
-    }
+    },
+    generating: Boolean
   },
   methods: {
     selectImage(index) {
@@ -43,6 +61,10 @@ export default {
   computed: {
     hasImages() {
       return !!this.images && this.images.length > 0
+    },
+
+    firstImage() {
+      return this.hasImages ? this.images[0] : null
     }
   }
 }
@@ -58,6 +80,7 @@ export default {
 
   height: 90px;
   background-color: #212121;
+  color: white;
 }
 
 .images {
@@ -83,6 +106,31 @@ export default {
 
 .preview-image img:hover {
   filter: none
+}
+
+.loading-image {
+  background-color: #666;
+  color: #212121;
+
+  transition: background-color 0.15s ease;
+}
+
+.loading-image:hover {
+  background-color: #555;
+}
+
+.loading-spinner-box {
+  display: flex;
+
+  width: 100%;
+  height: 100%;
+
+  align-items: center;
+  justify-content: center;
+}
+
+.loading-image img {
+  opacity: 0;
 }
 
 </style>
