@@ -86,14 +86,22 @@ const toonify = cv => { // TODO: research dependency injection?
     yield {
       type: 'edges',
       data: _helpers.imageDataFromMat(edgeImg),
-      tooltip: 'Toonify Edges'
+      tooltip: 'Toonify Edges',
+      step: {
+        text: 'TOONIFYING COLORS...',
+        progress: 30
+      }
     }
 
     const colorImg = toonifyColors(img)
     yield {
       type: 'colors',
       data: _helpers.imageDataFromMat(colorImg),
-      tooltip: 'Toonify Colors'
+      tooltip: 'Toonify Colors',
+      step: {
+        text: 'COMBINING EDGES WITH COLORS...',
+        progress: 90
+      }
     }
 
     const combined = toonifyCombine(edgeImg, colorImg)
