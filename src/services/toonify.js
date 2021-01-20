@@ -83,13 +83,25 @@ const toonify = cv => { // TODO: research dependency injection?
     const img = cv.matFromImageData(payload)
 
     const edgeImg = toonifyEdges(img)
-    yield _helpers.imageDataFromMat(edgeImg)
+    yield {
+      type: 'edges',
+      data: _helpers.imageDataFromMat(edgeImg),
+      tooltip: 'Toonify Edges'
+    }
 
     const colorImg = toonifyColors(img)
-    yield _helpers.imageDataFromMat(colorImg)
+    yield {
+      type: 'colors',
+      data: _helpers.imageDataFromMat(colorImg),
+      tooltip: 'Toonify Colors'
+    }
 
     const combined = toonifyCombine(edgeImg, colorImg)
-    yield _helpers.imageDataFromMat(combined)
+    yield {
+      type: 'combined',
+      data: _helpers.imageDataFromMat(combined),
+      tooltip: 'Combined Colors and Edges'
+    }
   }
 
   return payload => proxy(toonifyFilter(payload)) // generators don't work without comlink proxy
