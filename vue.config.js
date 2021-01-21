@@ -1,3 +1,4 @@
+const webpack = require('webpack')
 
 module.exports = {
   chainWebpack: config => {
@@ -9,5 +10,17 @@ module.exports = {
       .tap(options => {
         return Object.assign(options || {}, {singleton: true})
       })
+  },
+
+  configureWebpack: {
+    plugins: [
+      new webpack.ProvidePlugin({
+        $: 'jquery',
+        jQuery: 'jquery',
+        'window.jQuery': 'jquery',
+        'window.$': 'jquery',
+        Popper: ['popper.js', 'default']
+      })
+    ]
   }
 }
