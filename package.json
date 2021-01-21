@@ -12,6 +12,7 @@
     "@popperjs/core": "^2.6.0",
     "bootstrap": "^5.0.0-beta1",
     "core-js": "^3.6.5",
+    "jquery": "^3.5.1",
     "vue": "^3.0.0"
   },
   "devDependencies": {

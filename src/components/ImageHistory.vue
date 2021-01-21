@@ -11,7 +11,8 @@
       >
         <img
           :src='image.url'
-          :alt='image.tooltip' />
+          :alt='image.tooltip'
+          crossOrigin='Anonymous' />
       </a>
 
       <a
@@ -27,8 +28,10 @@
 
         <!-- Transparent image is used to make the spinner box the same size as the other images -->
         <img
-            :src='firstImage.url'
-            :alt='firstImage.tooltip' />
+          :src='firstImage.url'
+          :alt='firstImage.tooltip'
+          crossOrigin='Anonymous'
+        />
       </a>
     </div>
 
