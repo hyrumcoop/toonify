@@ -69,10 +69,6 @@ export default {
 
 <style scoped>
 
-.image-viewer {
-  height: 20px; /* TODO: children overflow this component if no height is set, even though height is overridden by flex-grow */
-}
-
 .image-container {
   height: 100%;
   padding: 30px;
