@@ -6,7 +6,7 @@ const CVService = function() {}
 CVService.prototype.load = async function() {
   if (this.loaded) return
 
-  self.importScripts('/js/opencv.js') // load OpenCV wasm TODO: add vue baseUrl
+  self.importScripts('js/opencv.js') // load OpenCV wasm
 
   this._cv = await self.cv()
   this._helpers = new helpers(this._cv)
