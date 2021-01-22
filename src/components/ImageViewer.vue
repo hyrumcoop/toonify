@@ -1,11 +1,19 @@
 <template>
   <div class='image-viewer flex-grow-1'>
     <div class='image-container' ref='imageContainer' v-if='!!image'>
-      <img
-        class='image'
-        :src='imageUrl'
-        crossOrigin='Anonymous'
-      />
+      <div class='image-inner-container'>
+        <img
+          class='image'
+          :src='imageUrl'
+          crossOrigin='Anonymous'
+        />
+
+        <div class='image-overlay'>
+          <a class='btn btn-light btn-lg' :href='imageUrl' download>
+            <i class="bi bi-file-earmark-arrow-down-fill"></i>
+          </a>
+        </div>
+      </div>
     </div>
 
     <div class='upload-container d-flex' v-if='!image'>
@@ -128,10 +136,38 @@ export default {
   padding: 30px;
 }
 
+.image-inner-container {
+  display: flex;
+
+  width: 100%;
+  height: 100%;
+
+  justify-content: center;
+  align-items: center;
+
+  cursor: pointer;
+}
+
 .image {
   width: 100%;
   height: 100%;
   object-fit: contain;
+
+  transition: filter 0.4s ease;
+}
+
+.image-inner-container:hover .image {
+  filter: brightness(0.5);
+}
+
+.image-overlay {
+  position: fixed;
+  opacity: 0;
+  transition: opacity 0.4s ease;
+}
+
+.image-inner-container:hover .image-overlay {
+  opacity: 1;
 }
 
 .upload-container {
