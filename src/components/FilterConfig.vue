@@ -48,6 +48,7 @@
       <button
         class='btn w-100 fw-bold'
         :class='{"btn-primary": !running, "btn-secondary": running}'
+        @click='$emit(running ? "stop" : "start")'
       >{{ running ? 'STOP' : 'FILTER' }}</button>
     </div>
 
@@ -55,19 +56,35 @@
       <hr>
 
       <div class='config-group'>
-        <button class='btn btn-primary w-100 fw-bold'>UPLOAD IMAGE</button>
+        <button class='btn btn-primary w-100 fw-bold' @click='$refs.uploadInput.click()'>UPLOAD IMAGE</button>
       </div>
 
       <div class='config-group'>
-        <button class='btn btn-secondary w-100 fw-bold'>LOAD URL</button>
+        <button class='btn btn-secondary w-100 fw-bold' @click='$refs.modal.show()'>LOAD URL</button>
       </div>
     </div>
+
+    <input
+      class='d-none'
+      type='file'
+      accept='image/png, image/jpeg'
+      ref='uploadInput'
+      @change='uploadImage'
+    />
+
+    <image-url-modal ref='modal' @upload='loadUrl($event)' />
   </div>
 </template>
 
 <script>
+import useImageUpload from '@/composables/useImageUpload'
+import ImageUrlModal from './ImageUrlModal'
+
 export default {
   name: 'FilterConfig',
+  components: {
+    ImageUrlModal
+  },
   props: {
     running: Boolean,
     modelValue: {
@@ -78,6 +95,9 @@ export default {
         quantization: 3
       })
     }
+  },
+  setup() {
+    return useImageUpload()
   },
   methods: {
     updateConfig(e, prop) {
@@ -94,6 +114,7 @@ export default {
 
 .sidebar {
   width: 200px;
+  min-width: 200px;
   height: 100%;
 
   border-left: 1px solid #ccc;
