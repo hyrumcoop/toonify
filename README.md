@@ -1,8 +1,8 @@
 # Toonify
 
-A cartoon image filtering tool ran completely in-browser, accelerated using [Web Workers](https://developer.mozilla.org/en-US/docs/Web/API/Web_Workers_API) and [Web Assembly](https://webassembly.org/).
+A cartoon image filtering tool ran completely in-browser, accelerated using [Web Workers](https://developer.mozilla.org/en-US/docs/Web/API/Web_Workers_API) and [Web Assembly](https://webassembly.org/). Click [here](https://hyrumcoop.github.io/toonify) to try the [demo](https://hyrumcoop.github.io/toonify)!
 
-![Toonify Screenshot](https://github.com/hyrumcoop/toonify/blob/master/public/images/screenshot.png?raw=true)
+[![Toonify Screenshot](https://github.com/hyrumcoop/toonify/blob/master/public/images/screenshot.png?raw=true)](https://hyrumcoop.github.io/toonify)
 
 ## How to Use It
 
