@@ -64,9 +64,9 @@ export default {
   data() {
     return {
       filterConfig: {
-        edges: 3,
-        blur: 2,
-        quantization: 4
+        edges: 440,
+        blur: 14,
+        quantization: 24
       },
       firstStart: true,
       uploadedImage: null,
@@ -108,7 +108,9 @@ export default {
         tooltip: 'Original Image' // TODO: if using a gallery enum, this is redundant and is based on type
       })
 
-      await this.generateGallery(await cv.toonify(this.uploadedImageData))
+      const config = Object.assign({}, this.filterConfig) // convert Proxy to object
+      const payload = {data: this.uploadedImageData, config}
+      await this.generateGallery(await cv.toonify(payload))
     }
   }
 }

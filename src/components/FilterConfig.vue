@@ -7,8 +7,8 @@
       <input
         type='range'
         class='form-range'
-        min='0'
-        max='5'
+        min='5'
+        max='500'
         id='edges-input'
         :disabled='running'
         :value='modelValue.edges'
@@ -21,8 +21,8 @@
       <input
         type='range'
         class='form-range'
-        min='0'
-        max='5'
+        min='8'
+        max='20'
         id='blur-input'
         :disabled='running'
         :value='modelValue.blur'
@@ -35,8 +35,8 @@
       <input
         type='range'
         class='form-range'
-        min='0'
-        max='5'
+        min='1'
+        max='168'
         id='quantization-input'
         :disabled='running'
         :value='modelValue.quantization'
@@ -90,9 +90,9 @@ export default {
     modelValue: {
       type: Object,
       default: () => ({
-        edges: 3,
-        blur: 3,
-        quantization: 3
+        edges: 440,
+        blur: 14,
+        quantization: 24
       })
     }
   },
@@ -103,7 +103,7 @@ export default {
     updateConfig(e, prop) {
       this.$emit('update:modelValue', {
         ...this.modelValue,
-        [prop]: e.target.value
+        [prop]: parseInt(e.target.value)
       })
     }
   }
