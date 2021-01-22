@@ -10,12 +10,15 @@ const useImageGallery = () => {
   const loading = ref(false)
   const step = ref(null)
 
+  let job = 0 // ID of current job; helps avoid complications when starting/stopping filter
+
   const clear = () => {
     gallery.value = []
     selected.value = 0
     autoSelect.value = true
     loading.value = false
     step.value = false
+    job++
   }
 
   const process = ({type, tooltip, data, url}) => {
@@ -38,24 +41,35 @@ const useImageGallery = () => {
     step.value = {text: 'PROCESSING EDGES...', progress: 10} // TODO: this is hacky; it should come from the toonify worker method
     loading.value = true
 
+    const thisJob = job
+   
     // TODO: this is ugly; try iterating generator using a for-loop
     const iterate = async () => {
       const res = await generator.next()
-      if (res.done) return
+      if (res.done) return true
+      if (job != thisJob) return false // indicates that this iteration is no longer working on the current job; this job has been stopped
 
       push(res.value)
       step.value = res.value.step
 
-      await iterate()
+      return await iterate()
     }
     
-    await iterate()
+    const finished = await iterate()
 
-    loading.value = false
-    step.value = {
-      text: 'COMPLETE',
-      progress: 100
+    if (finished) {
+      job++
+      loading.value = false
+      step.value = {
+        text: 'COMPLETE',
+        progress: 100
+      }
     }
+  }
+
+  const stop = () => {
+    job++
+    loading.value = false
   }
 
   const select = index => {
@@ -91,6 +105,7 @@ const useImageGallery = () => {
     clearGallery: clear,
     pushImage: push,
     generateGallery: generate,
+    stopGenerating: stop,
     selectImage: select,
 
     isGalleryEmpty: isEmpty,

@@ -26,7 +26,7 @@ const toonify = cv => { // TODO: research dependency injection?
   }
   
   // TODO: use generator
-  const toonifyEdges = img => {
+  const toonifyEdges = (img, threshold) => {
     const blurred = new cv.Mat()
     const edges = new cv.Mat()
     const dilated = new cv.Mat()
@@ -34,25 +34,25 @@ const toonify = cv => { // TODO: research dependency injection?
     const structEl = cv.getStructuringElement(cv.MORPH_CROSS, new cv.Size(2, 2)) // TODO: try different shapes
   
     cv.medianBlur(img, blurred, 7)
-    cv.Canny(blurred, edges, 5, 60)
+    cv.Canny(blurred, edges, 5, threshold)
     cv.dilate(edges, dilated, structEl)
   
     return dilated
   }
   
   // TODO: use generator
-  const toonifyColors = img => {
+  const toonifyColors = (img, blur, quantization) => {
     let prevMat = img.clone()
     cv.cvtColor(prevMat, prevMat, cv.COLOR_BGRA2BGR)
   
-    for (let i = 0; i < 14; i++) {
+    for (let i = 0; i < blur; i++) {
       const mat = new cv.Mat()
       cv.bilateralFilter(prevMat, mat, 9, 75, 75)
   
       prevMat = mat
     }
   
-    const result = quantizeColors(prevMat, 24)
+    const result = quantizeColors(prevMat, quantization)
   
     return result
   }
@@ -80,9 +80,12 @@ const toonify = cv => { // TODO: research dependency injection?
   
   // the actual toonify function that is returned
   const toonifyFilter = function* (payload) {
-    const img = cv.matFromImageData(payload)
+    const img = cv.matFromImageData(payload.data)
+    let { edges, blur, quantization } = payload.config || {edges: 440, blur: 14, quantization: 24}
 
-    const edgeImg = toonifyEdges(img)
+    edges = 500 - edges // 500 is the max limit for our config; more edges means lower threshold
+
+    const edgeImg = toonifyEdges(img, edges)
     yield {
       type: 'edges',
       data: _helpers.imageDataFromMat(edgeImg),
@@ -93,7 +96,7 @@ const toonify = cv => { // TODO: research dependency injection?
       }
     }
 
-    const colorImg = toonifyColors(img)
+    const colorImg = toonifyColors(img, blur, quantization)
     yield {
       type: 'colors',
       data: _helpers.imageDataFromMat(colorImg),

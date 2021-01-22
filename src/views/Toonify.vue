@@ -2,10 +2,22 @@
   <div class='d-flex flex-column vh-100'>
     <navbar />
 
-    <image-viewer
-      :image='currentImage'
-      @upload='uploadImage'
-    />
+    <div class='d-flex flex-grow-1 flex-row' style='height: 10px'>
+      <image-viewer
+        class='flex-grow-1'
+        :image='currentImage'
+        @upload='uploadImage'
+      />
+
+      <filter-config
+        :running='loadingGallery'
+        v-model='filterConfig'
+        v-if='!!currentImage'
+        @upload='uploadImage'
+        @start='startFilter'
+        @stop='stopGenerating'
+      />
+    </div>
 
     <loading-bar
       v-if='loadingGallery'
@@ -30,6 +42,7 @@ import useImageDataConverter from '@/composables/useImageDataConverter'
 
 import Navbar from '@/components/Navbar'
 import ImageViewer from '@/components/ImageViewer'
+import FilterConfig from '@/components/FilterConfig'
 import LoadingBar from '@/components/LoadingBar'
 import ImageHistory from '@/components/ImageHistory'
 
@@ -38,6 +51,7 @@ export default {
   components: {
     Navbar,
     ImageViewer,
+    FilterConfig,
     LoadingBar,
     ImageHistory
   },
@@ -45,6 +59,18 @@ export default {
     return {
       ...useImageDataConverter(),
       ...useImageGallery()
+    }
+  },
+  data() {
+    return {
+      filterConfig: {
+        edges: 440,
+        blur: 14,
+        quantization: 24
+      },
+      firstStart: true,
+      uploadedImage: null,
+      uploadedImageData: null
     }
   },
   async mounted() {
@@ -62,8 +88,29 @@ export default {
         tooltip: 'Original Image' // TODO: if using a gallery enum, this is redundant and is based on type
       })
 
-      const imageData = this.toImageData(img)
-      this.generateGallery(await cv.toonify(imageData))
+      this.uploadedImage = img
+      this.uploadedImageData = this.toImageData(img)
+      
+      if (this.firstStart) {
+        this.firstStart = false
+        this.startFilter()
+      }
+    },
+
+    async startFilter() {
+      if (this.loadingGallery) return
+
+      this.clearGallery()
+
+      this.pushImage({
+        type: 'original', // TODO: gallery image type enums?
+        url: this.uploadedImage.src,
+        tooltip: 'Original Image' // TODO: if using a gallery enum, this is redundant and is based on type
+      })
+
+      const config = Object.assign({}, this.filterConfig) // convert Proxy to object
+      const payload = {data: this.uploadedImageData, config}
+      await this.generateGallery(await cv.toonify(payload))
     }
   }
 }
